@@ -68,6 +68,23 @@ public class PortletFactoryImpl extends PrincipalBean implements PortletFactory 
   }
 
   @Override
+  public Map<String, Portlet> xmlToPortlets(final Document doc) throws IOException, JDOMException {
+
+    final Map<String, Portlet> portlets = new HashMap<>();
+
+    List<Element> list = doc.getRootElement().getChildren("portlet");
+
+    for (Element node : list) {
+      String portletXML = new XMLOutputter(Format.getCompactFormat()).outputString(node);
+      Optional<DotPortlet> portlet = xmlToPortlet(portletXML);
+      if (portlet.isPresent()) {
+        portlets.put(portlet.get().getPortletId(), portlet.get());
+      }
+    }
+    return portlets;
+  }
+
+  @Override
   @VisibleForTesting
   public Optional<DotPortlet> xmlToPortlet(String xml) throws IOException, JDOMException {
     InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));

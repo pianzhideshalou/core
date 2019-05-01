@@ -382,11 +382,15 @@ public abstract class GenericBundleActivator implements BundleActivator {
     @SuppressWarnings ("unchecked")
     protected Collection<Portlet> registerPortlets ( BundleContext context, String[] xmls ) throws Exception {
 
-        String[] confFiles = new String[]{Http.URLtoString( context.getBundle().getResource( xmls[0] ) ),
-                Http.URLtoString( context.getBundle().getResource( xmls[1] ) )};
+        String confFiles = null;
+        for(String xml : xmls){
+            if(!xml.contains("liferay")){
+                confFiles = Http.URLtoString( context.getBundle().getResource( xml ));
+            }
+        }
 
         //Read the portlets xml files and create them
-        portlets = PortletManagerUtil.addPortlets( confFiles );
+        portlets = PortletManagerUtil.addPortletsDocument( confFiles );
 
         for ( Portlet portlet : portlets ) {
 

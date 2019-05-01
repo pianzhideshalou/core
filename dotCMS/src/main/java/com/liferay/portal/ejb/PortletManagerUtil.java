@@ -19,12 +19,18 @@
 
 package com.liferay.portal.ejb;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.dotcms.business.CloseDBIfOpened;
 import com.dotmarketing.business.portal.PortletFactory;
 import com.liferay.portal.model.Portlet;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
 
 /**
  * <a href="PortletManagerUtil.java.html"><b><i>View Source</i></b></a>
@@ -45,6 +51,27 @@ public class PortletManagerUtil {
             }
             
             return portletFactory.getPortlets();
+        } catch (final Exception e) {
+            throw new com.liferay.portal.SystemException(e);
+        }
+    }
+
+    public static Collection addPortletsDocument(final String xml) throws com.liferay.portal.SystemException {
+        try {
+            final PortletFactory portletFactory = PortletManagerFactory.getManager();
+
+            InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = (Document) builder.build(stream);
+
+            final Map<String,Portlet> portlets = portletFactory.xmlToPortlets(doc);
+            List<Portlet> portletsInserted = new ArrayList<Portlet>();
+            for(Portlet portletToInsert : portlets.values()) {
+                final Portlet portlet = portletFactory.insertPortlet(portletToInsert);
+                portletsInserted.add(portlet);
+            }
+
+            return portletsInserted;
         } catch (final Exception e) {
             throw new com.liferay.portal.SystemException(e);
         }

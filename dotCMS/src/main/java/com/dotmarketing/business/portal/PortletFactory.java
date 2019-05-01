@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jdom.Document;
 import org.jdom.JDOMException;
 
 import com.dotmarketing.exception.DotDataException;
@@ -29,5 +30,7 @@ public interface PortletFactory {
   Map<String, Portlet> xmlToPortlets(String[] xmlFiles) throws SystemException;
 
   Optional<DotPortlet> xmlToPortlet(String xml) throws IOException, JDOMException;
+
+  Map<String, Portlet> xmlToPortlets(final Document doc) throws IOException, JDOMException;
 
 }
