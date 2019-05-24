@@ -523,7 +523,7 @@ public class ContentletIndexAPIImplTest extends IntegrationTestBase {
 
             int x=0;
             do {
-                Thread.sleep(200);
+                Thread.sleep(1000);
                 //Verify if it was removed to the index
                 result = contentletAPI.search( query, 0, -1, "modDate desc", user, true );
                 x++;
